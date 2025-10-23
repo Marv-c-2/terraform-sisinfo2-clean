@@ -1,8 +1,12 @@
-  terraform {
+terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "=4.23.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~>3.5"
     }
   }
 }
@@ -16,20 +20,26 @@ provider "azurerm" {
   tenant_id       = var.tenant_id
 }
 
-# grupo de recursos
-resource "azurerm_resource_group" "rg" {
-  name     = "gr-sisinfo-entel-13893075"
-  location = "Brazil South"
+# Genera un número aleatorio para evitar conflictos
+resource "random_integer" "suffix" {
+  min = 10000
+  max = 99999
 }
 
+# Resource Group
+resource "azurerm_resource_group" "rg" {
+  name     = "gr-sisinfo-entel-${random_integer.suffix.result}"
+  location = "chilecentral"
+}
+
+# Storage Account
 resource "azurerm_storage_account" "sa" {
-  name                     = "saucbenteldelta13893075"
+  name                     = "saucbenteldelta${random_integer.suffix.result}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  account_kind             = "StorageV2"
-  is_hns_enabled           = "true"
+  is_hns_enabled           = true
 }
 
 resource "azurerm_storage_container" "raw_entel" {
@@ -38,12 +48,13 @@ resource "azurerm_storage_container" "raw_entel" {
   container_access_type = "blob"
 }
 
+# Blobs (usa rutas absolutas de Windows)
 resource "azurerm_storage_blob" "_03csv" {
   name                   = "03.csv"
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.raw_entel.name
   type                   = "Block"
-  source                 = "Dataset/03.csv"
+  source                 = "C:/Users/MARVIN/Documents/terraform-sisinfo2-clean/Dataset/03.csv"
 }
 
 resource "azurerm_storage_blob" "_05csv" {
@@ -51,7 +62,7 @@ resource "azurerm_storage_blob" "_05csv" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.raw_entel.name
   type                   = "Block"
-  source                 = "Dataset/05.csv"
+  source                 = "C:/Users/MARVIN/Documents/terraform-sisinfo2-clean/Dataset/05.csv"
 }
 
 resource "azurerm_storage_blob" "_06csv" {
@@ -59,14 +70,12 @@ resource "azurerm_storage_blob" "_06csv" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.raw_entel.name
   type                   = "Block"
-  source                 = "Dataset/06.csv"
+  source                 = "C:/Users/MARVIN/Documents/terraform-sisinfo2-clean/Dataset/06.csv"
 }
 
-
-# base de datos sql
-
+# SQL Server
 resource "azurerm_mssql_server" "db" {
-  name                         = "sql-ucb-sisinfo-entel-delta"
+  name                         = "sql-ucb-sisinfo-entel-delta-${random_integer.suffix.result}"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = azurerm_resource_group.rg.location
   version                      = "12.0"
@@ -82,28 +91,27 @@ resource "azurerm_mssql_firewall_rule" "rulefirewall" {
 }
 
 resource "azurerm_mssql_database" "dw_entel" {
-  name         = "dw_entel_delta"
-  server_id    = azurerm_mssql_server.db.id
-  collation    = "SQL_Latin1_General_CP1_CI_AS"
-  license_type = "LicenseIncluded"
-  max_size_gb  = 2
-  sku_name     = "S0"
-  enclave_type = "VBS"
+  name                  = "dw_entel_delta"
+  server_id             = azurerm_mssql_server.db.id
+  collation             = "SQL_Latin1_General_CP1_CI_AS"
+  license_type          = "LicenseIncluded"
+  max_size_gb           = 2
+  sku_name              = "S0"
+  enclave_type          = "VBS"
+  storage_account_type  = "Local"  # <- compatible con chilecentral
 
   tags = {
     foo = "bar"
   }
 
-  # prevent the possibility of accidental data loss
   lifecycle {
     prevent_destroy = false
   }
 }
 
-# agregar  data factory
-
+# Data Factory
 resource "azurerm_data_factory" "df" {
-  name                = "adf-ucb-dw-entel-4536427"
+  name                = "adf-ucb-dw-entel-${random_integer.suffix.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
