@@ -1,0 +1,22 @@
+# Archivos de Terraform que no deben subirse
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+
+# Configuración del proveedor
+*.backup
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+.terraform/
+*.tfstate
+*.tfvars
+
+datos.txt
