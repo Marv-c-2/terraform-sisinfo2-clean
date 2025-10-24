@@ -1,0 +1,83 @@
+{
+	"name": "03_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_raw_entel",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Bronze"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "03.csv",
+				"container": "raw-entel"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SERVICIO",
+				"type": "String"
+			},
+			{
+				"name": "REGISTRO",
+				"type": "String"
+			},
+			{
+				"name": "NUMERO_A",
+				"type": "String"
+			},
+			{
+				"name": "IMEI_A",
+				"type": "String"
+			},
+			{
+				"name": "RBS UTILIZADA_A",
+				"type": "String"
+			},
+			{
+				"name": "CELDA_A",
+				"type": "String"
+			},
+			{
+				"name": "LATITUD_LONGITUD_A",
+				"type": "String"
+			},
+			{
+				"name": "NUMERO_B",
+				"type": "String"
+			},
+			{
+				"name": "IMEI_B",
+				"type": "String"
+			},
+			{
+				"name": "RBS_UTILIZADA_B",
+				"type": "String"
+			},
+			{
+				"name": "CELDA_B",
+				"type": "String"
+			},
+			{
+				"name": "LATITUD_LONGITUD_B",
+				"type": "String"
+			},
+			{
+				"name": "FECHA",
+				"type": "String"
+			},
+			{
+				"name": "DURACION",
+				"type": "String"
+			}
+		]
+	}
+}

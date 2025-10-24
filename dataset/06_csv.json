@@ -1,0 +1,67 @@
+{
+	"name": "06_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_raw_entel",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Bronze"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "06.csv",
+				"container": "raw-entel"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "FECHA_INICIO",
+				"type": "String"
+			},
+			{
+				"name": "FECHA_FIN",
+				"type": "String"
+			},
+			{
+				"name": "NUMERO",
+				"type": "String"
+			},
+			{
+				"name": "IMEI",
+				"type": "String"
+			},
+			{
+				"name": "RBS_UTILIZADA",
+				"type": "String"
+			},
+			{
+				"name": "CELDA",
+				"type": "String"
+			},
+			{
+				"name": "LATITUD LONGITUD",
+				"type": "String"
+			},
+			{
+				"name": "SUBIDOS",
+				"type": "String"
+			},
+			{
+				"name": "DESCARGADOS",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL",
+				"type": "String"
+			}
+		]
+	}
+}
