@@ -1,0 +1,60 @@
+{
+	"name": "ds_sql_05",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_dw_entel",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Bronze"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "fecha_inicio",
+				"type": "nvarchar"
+			},
+			{
+				"name": "fecha_fin",
+				"type": "nvarchar"
+			},
+			{
+				"name": "numero",
+				"type": "nvarchar"
+			},
+			{
+				"name": "imei",
+				"type": "nvarchar"
+			},
+			{
+				"name": "rbs_utilizada",
+				"type": "nvarchar"
+			},
+			{
+				"name": "celda",
+				"type": "nvarchar"
+			},
+			{
+				"name": "latitud_longitud",
+				"type": "nvarchar"
+			},
+			{
+				"name": "subidos",
+				"type": "nvarchar"
+			},
+			{
+				"name": "descargados",
+				"type": "nvarchar"
+			},
+			{
+				"name": "total",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "bronze",
+			"table": "05"
+		}
+	}
+}
