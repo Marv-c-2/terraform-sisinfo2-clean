@@ -1,0 +1,141 @@
+{
+	"name": "df_silver_datos",
+	"properties": {
+		"folder": {
+			"name": "Silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_sql_05",
+						"type": "DatasetReference"
+					},
+					"name": "a05"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_sql_06",
+						"type": "DatasetReference"
+					},
+					"name": "a06"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_sql_silver_datos",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "union1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "cast2"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          fecha_inicio as string,",
+				"          fecha_fin as string,",
+				"          numero as string,",
+				"          imei as string,",
+				"          rbs_utilizada as string,",
+				"          celda as string,",
+				"          latitud_longitud as string,",
+				"          subidos as string,",
+				"          descargados as string,",
+				"          total as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> a05",
+				"source(output(",
+				"          fecha_inicio as string,",
+				"          fecha_fin as string,",
+				"          numero as string,",
+				"          imei as string,",
+				"          rbs_utilizada as string,",
+				"          celda as string,",
+				"          latitud_longitud as string,",
+				"          subidos as string,",
+				"          descargados as string,",
+				"          total as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> a06",
+				"a05, a06 union(byName: true)~> union1",
+				"union1 derive(Latitud = substring(latitud_longitud, 0, instr(latitud_longitud, \",-\")-1),",
+				"          Longitud = substring(latitud_longitud,instr(latitud_longitud, \",-\")+1,length(latitud_longitud))) ~> derivedColumn1",
+				"derivedColumn1 cast(output(",
+				"          fecha_inicio as timestamp 'MM-dd-yyyy HH:mm:ss',",
+				"          fecha_fin as timestamp 'MM-dd-yyyy HH:mm:ss',",
+				"          subidos as integer,",
+				"          descargados as integer,",
+				"          total as integer",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"derivedColumn2 cast(output(",
+				"          Latitud as decimal(10,4),",
+				"          Longitud as decimal(10,4)",
+				"     ),",
+				"     errors: true) ~> cast2",
+				"cast1 derive(Latitud = replace(Latitud, ',' , '.'),",
+				"          Longitud = replace(Longitud, ',', '.')) ~> derivedColumn2",
+				"cast2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          fecha_inicio as timestamp,",
+				"          fecha_fin as timestamp,",
+				"          numero as string,",
+				"          imei as string,",
+				"          rbs_utilizada as string,",
+				"          celda as string,",
+				"          latitud as decimal(10,7),",
+				"          longitud as decimal(10,7),",
+				"          subidos as integer,",
+				"          descargados as integer,",
+				"          total as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          fecha_inicio,",
+				"          fecha_fin,",
+				"          numero,",
+				"          imei,",
+				"          rbs_utilizada,",
+				"          celda,",
+				"          latitud = Latitud,",
+				"          longitud = Longitud,",
+				"          subidos,",
+				"          descargados,",
+				"          total",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
