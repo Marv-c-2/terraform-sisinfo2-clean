@@ -1,0 +1,95 @@
+{
+	"name": "ds_sql_silver_llamadas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_dw_entel",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Silver"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "servicio",
+				"type": "nvarchar"
+			},
+			{
+				"name": "registro",
+				"type": "nvarchar"
+			},
+			{
+				"name": "numero_a",
+				"type": "nvarchar"
+			},
+			{
+				"name": "imei_a",
+				"type": "nvarchar"
+			},
+			{
+				"name": "rbs_utilizada_a",
+				"type": "nvarchar"
+			},
+			{
+				"name": "celda_a",
+				"type": "nvarchar"
+			},
+			{
+				"name": "latitud_a",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 7
+			},
+			{
+				"name": "longitud_a",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 7
+			},
+			{
+				"name": "numero_b",
+				"type": "nvarchar"
+			},
+			{
+				"name": "imei_b",
+				"type": "nvarchar"
+			},
+			{
+				"name": "rbs_utilizada_b",
+				"type": "nvarchar"
+			},
+			{
+				"name": "celda_b",
+				"type": "nvarchar"
+			},
+			{
+				"name": "latitud_b",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 7
+			},
+			{
+				"name": "longitud_b",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 7
+			},
+			{
+				"name": "fecha",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "duracion",
+				"type": "time",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "silver",
+			"table": "llamadas"
+		}
+	}
+}
