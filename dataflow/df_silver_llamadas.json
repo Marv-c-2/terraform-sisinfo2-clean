@@ -22,6 +22,18 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "cast2"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "derivedColumn4"
 				}
 			],
 			"scriptLines": [
@@ -49,7 +61,19 @@
 				"          fecha as timestamp 'dd-MM-yyyy HH:mm:ss'",
 				"     ),",
 				"     errors: true) ~> cast1",
-				"cast1 derive(duracion = replace(duracion, '-', '00:00:00')) ~> derivedColumn1"
+				"cast1 derive(duracion = replace(duracion, '-', '00:00:00')) ~> derivedColumn1",
+				"derivedColumn1 cast(output(",
+				"          duracion as timestamp 'HH:mm:ss'",
+				"     ),",
+				"     errors: true) ~> cast2",
+				"cast2 derive(Latitud_a = substring(latitud_longitud_a, 0, instr(latitud_longitud_a, \",-\")-1),",
+				"          Longitud_a = substring(latitud_longitud_a,instr(latitud_longitud_a, \",-\")+1,length(latitud_longitud_a))) ~> derivedColumn2",
+				"derivedColumn2 derive(Latitud_b = substring(latitud_longitud_b, 0, instr(latitud_longitud_b, \",-\")-1),",
+				"          Longitud_b = substring(latitud_longitud_b,instr(latitud_longitud_b, \",-\")+1,length(latitud_longitud_b))) ~> derivedColumn3",
+				"derivedColumn3 derive(Latitud_a = replace(replace(Latitud_a, '', '0.0'), '-', '0.0'),",
+				"          Longitud_a = replace(replace(Longitud_a, '', '0.0'), '-', '0.0'),",
+				"          Latitud_b = replace(replace(Latitud_b, '', '0.0'), '-', '0.0'),",
+				"          Longitud_b = replace(replace(Longitud_b, '', '0.0'), '-', '0.0')) ~> derivedColumn4"
 			]
 		}
 	}
